@@ -16,6 +16,7 @@ import { RepeatWrapping } from "three";
 export function GlobeWithHeight() {
   let [object, setObject] = useState(null);
   let [objectWater, setObjectWater] = useState(null);
+  let [objectParticles, setObjectParticles] = useState(null);
 
   let { scene } = useThree();
   useEffect(() => {
@@ -44,20 +45,20 @@ export function GlobeWithHeight() {
       (hdrImage) => {
         hdrImage.mapping = EquirectangularReflectionMapping;
         scene.environment = hdrImage;
-        scene.background = hdrImage;
+        scene.background = new Color("#000000");
       }
     );
 
     let sea = new Color("#0c5a6d"); //.addScalar(-0.1);
     let hill = new Color("#0c6d1e");
-    let waterGeo = new SphereBufferGeometry(15.1, 32, 32);
+    let waterGeo = new SphereBufferGeometry(15.2, 32, 32);
     let waterMat = new MeshStandardMaterial({
-      color: sea,
+      color: sea.clone().sub(new Color("#333333")),
       roughness: 0.5,
       metalness: 1.0,
       normalMap: waterMap,
       transparent: true,
-      opacity: 0.8,
+      opacity: 0.85,
     });
     let water = new Mesh(waterGeo, waterMat);
     setObjectWater(water);
@@ -85,7 +86,7 @@ export function GlobeWithHeight() {
           vec4 displacementColor = texture2D(displacement, uv);
           vec4 newPos = vec4(normal * displacementColor.rgb, 1.0);
           vNewPos = modelMatrix * newPos;
-          gl_Position = projectionMatrix * modelViewMatrix * vec4(position - normal * 0.8 + newPos.xyz, 1.0);
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position - normal * 0.1 + newPos.xyz, 1.0);
         }
       `,
       fragmentShader: `
@@ -104,7 +105,7 @@ export function GlobeWithHeight() {
           vec4 normalColor = texture2D(normalMap, vMyUv);
           float floorRatio = (dot(normalize(vNewPos.rgb), vNewPos.rgb));
 
-          gl_FragColor = vec4(mix(seaColor, dayColor.rgb, floorRatio) + nightColor.rgb, 1.0);
+          gl_FragColor = vec4(mix(seaColor, dayColor.rgb * hillColor, floorRatio) + nightColor.rgb, 1.0);
         }
       `,
     });
@@ -132,6 +133,11 @@ export function GlobeWithHeight() {
       {objectWater && (
         <>
           <primitive object={objectWater} />
+        </>
+      )}
+      {objectParticles && (
+        <>
+          <primitive object={objectParticles} />
         </>
       )}
     </group>
