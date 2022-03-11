@@ -28,11 +28,15 @@ export function GlobeWithHeight() {
     let nightMap = new TextureLoader().load(
       `https://effectnode-2022.s3.ap-southeast-1.amazonaws.com/texture/images/earth-displacement/2k_earth_nightmap.png`
     );
+    nightMap.encoding = sRGBEncoding;
 
+    let dayMap = new TextureLoader().load(
+      `https://effectnode-2022.s3.ap-southeast-1.amazonaws.com/texture/images/earth-displacement/2k_earth_daymap.png`
+    );
+    dayMap.encoding = sRGBEncoding;
     let waterMap = new TextureLoader().load(
       `https://effectnode-2022.s3.ap-southeast-1.amazonaws.com/texture/images/water/waternormals.jpg`
     );
-    nightMap.encoding = sRGBEncoding;
 
     let hdri = new RGBELoader();
     hdri.load(
@@ -44,12 +48,12 @@ export function GlobeWithHeight() {
       }
     );
 
-    let sea = new Color("#0c5a6d");
+    let sea = new Color("#0c5a6d"); //.addScalar(-0.1);
     let hill = new Color("#0c6d1e");
     let waterGeo = new SphereBufferGeometry(15.3, 32, 32);
     let waterMat = new MeshStandardMaterial({
       color: sea,
-      roughness: 0.3,
+      roughness: 0.5,
       metalness: 1.0,
       normalMap: waterMap,
       transparent: true,
@@ -58,11 +62,13 @@ export function GlobeWithHeight() {
     let water = new Mesh(waterGeo, waterMat);
     setObjectWater(water);
 
-    let ballGeo = new SphereBufferGeometry(15, 512, 512);
+    let ballGeo = new SphereBufferGeometry(15, 256, 256);
     let uniforms = {
       hillColor: { value: hill },
       seaColor: { value: sea },
       normalMap: { value: normalMap },
+      nightMap: { value: nightMap },
+      dayMap: { value: dayMap },
       displacement: { value: displacement },
     };
     let ballMat = new ShaderMaterial({
@@ -87,15 +93,18 @@ export function GlobeWithHeight() {
         varying vec2 vMyUv;
         varying vec3 vCamPos;
         uniform sampler2D normalMap;
+        uniform sampler2D nightMap;
+        uniform sampler2D dayMap;
         uniform vec3 hillColor;
         uniform vec3 seaColor;
 
         void main (void) {
+          vec4 dayColor = texture2D(dayMap, vMyUv);
+          vec4 nightColor = texture2D(nightMap, vMyUv);
           vec4 normalColor = texture2D(normalMap, vMyUv);
-
           float floorRatio = (dot(normalize(vNewPos.rgb), vNewPos.rgb));
-          float ratio = mix(0.0, 1.0, floorRatio);
-          gl_FragColor = vec4(mix(seaColor, hillColor, ratio), 1.0);
+
+          gl_FragColor = vec4(mix(seaColor, dayColor.rgb + nightColor.rgb, floorRatio), 1.0);
         }
       `,
     });
@@ -108,7 +117,8 @@ export function GlobeWithHeight() {
     if (objectWater) {
       objectWater.material.normalMap.wrapS = RepeatWrapping;
       objectWater.material.normalMap.wrapT = RepeatWrapping;
-      objectWater.material.normalMap.offset.set(t * 0.003, t * 0.003);
+      objectWater.material.normalMap.repeat.set(3.0, 3.0);
+      objectWater.material.normalMap.offset.set(t * 0.01, t * 0.01);
     }
   });
 
