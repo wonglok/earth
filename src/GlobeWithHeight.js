@@ -62,7 +62,7 @@ export function GlobeWithHeight() {
     let water = new Mesh(waterGeo, waterMat);
     setObjectWater(water);
 
-    let ballGeo = new SphereBufferGeometry(15, 256, 256);
+    let ballGeo = new SphereBufferGeometry(15, 512, 512);
     let uniforms = {
       hillColor: { value: hill },
       seaColor: { value: sea },
