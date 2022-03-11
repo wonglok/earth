@@ -31,7 +31,7 @@ export function GlobeWithHeight() {
     nightMap.encoding = sRGBEncoding;
 
     let dayMap = new TextureLoader().load(
-      `https://effectnode-2022.s3.ap-southeast-1.amazonaws.com/texture/images/earth-displacement/2k_earth_daymap.png`
+      `https://effectnode-2022.s3.ap-southeast-1.amazonaws.com/texture/images/earth-displacement/4k-earth-daytime.jpg`
     );
     dayMap.encoding = sRGBEncoding;
     let waterMap = new TextureLoader().load(
@@ -50,7 +50,7 @@ export function GlobeWithHeight() {
 
     let sea = new Color("#0c5a6d"); //.addScalar(-0.1);
     let hill = new Color("#0c6d1e");
-    let waterGeo = new SphereBufferGeometry(15.3, 32, 32);
+    let waterGeo = new SphereBufferGeometry(15.1, 32, 32);
     let waterMat = new MeshStandardMaterial({
       color: sea,
       roughness: 0.5,
@@ -62,7 +62,7 @@ export function GlobeWithHeight() {
     let water = new Mesh(waterGeo, waterMat);
     setObjectWater(water);
 
-    let ballGeo = new SphereBufferGeometry(15, 512, 512);
+    let ballGeo = new SphereBufferGeometry(15, 640, 640);
     let uniforms = {
       hillColor: { value: hill },
       seaColor: { value: sea },
@@ -83,9 +83,9 @@ export function GlobeWithHeight() {
           vMyUv = uv;
           vCamPos = cameraPosition.rgb;
           vec4 displacementColor = texture2D(displacement, uv);
-          vec4 newPos = vec4(normal * displacementColor.rgb * 0.7, 1.0);
+          vec4 newPos = vec4(normal * displacementColor.rgb, 1.0);
           vNewPos = modelMatrix * newPos;
-          gl_Position = projectionMatrix * modelViewMatrix * vec4(position + newPos.xyz, 1.0);
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position - normal * 0.8 + newPos.xyz, 1.0);
         }
       `,
       fragmentShader: `
@@ -104,7 +104,7 @@ export function GlobeWithHeight() {
           vec4 normalColor = texture2D(normalMap, vMyUv);
           float floorRatio = (dot(normalize(vNewPos.rgb), vNewPos.rgb));
 
-          gl_FragColor = vec4(mix(seaColor, dayColor.rgb + nightColor.rgb, floorRatio), 1.0);
+          gl_FragColor = vec4(mix(seaColor, dayColor.rgb, floorRatio) + nightColor.rgb, 1.0);
         }
       `,
     });
