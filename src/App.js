@@ -18,7 +18,7 @@ export default function App() {
       <CameraAdjust />
       <ambientLight />
       <MyOrbitControls />
-      <directionalLight position={[1, 1, 1]} />
+      {/* <directionalLight position={[1, 1, 1]} /> */}
     </Canvas>
   );
 }

@@ -56,7 +56,7 @@ export function GlobeWithHeight() {
       color: sea.clone().sub(new Color("#333333")),
       roughness: 0.5,
       metalness: 1.0,
-      normalMap: waterMap,
+      // normalMap: waterMap,
       transparent: true,
       opacity: 0.85,
     });
@@ -103,9 +103,11 @@ export function GlobeWithHeight() {
           vec4 dayColor = texture2D(dayMap, vMyUv);
           vec4 nightColor = texture2D(nightMap, vMyUv);
           vec4 normalColor = texture2D(normalMap, vMyUv);
-          float floorRatio = (dot(normalize(vNewPos.rgb), vNewPos.rgb));
+          float floorRatio = pow(dot(normalize(vNewPos.rgb), vNewPos.rgb), 3.0);
 
-          gl_FragColor = vec4(mix(seaColor, dayColor.rgb * hillColor, floorRatio) + nightColor.rgb, 1.0);
+
+          // dayColor.rgb * + nightColor.rgb
+          gl_FragColor = vec4(mix(seaColor, hillColor, floorRatio), 1.0);
         }
       `,
     });
@@ -116,10 +118,10 @@ export function GlobeWithHeight() {
   useFrame(({ clock }) => {
     let t = clock.getElapsedTime();
     if (objectWater) {
-      objectWater.material.normalMap.wrapS = RepeatWrapping;
-      objectWater.material.normalMap.wrapT = RepeatWrapping;
-      objectWater.material.normalMap.repeat.set(3.0, 3.0);
-      objectWater.material.normalMap.offset.set(t * 0.01, t * 0.01);
+      // objectWater.material.normalMap.wrapS = RepeatWrapping;
+      // objectWater.material.normalMap.wrapT = RepeatWrapping;
+      // objectWater.material.normalMap.repeat.set(3.0, 3.0);
+      // objectWater.material.normalMap.offset.set(t * 0.01, t * 0.01);
     }
   });
 
