@@ -16,9 +16,9 @@ export default function App() {
       </Suspense>
       <Bloom></Bloom>
       <CameraAdjust />
-      {/* <ambientLight /> */}
+      <ambientLight intensity={30} />
       <MyOrbitControls />
-      {/* <directionalLight position={[1, 1, 1]} /> */}
+      {/* <directionalLight intensity={1} position={[100, 0, -100]} /> */}
     </Canvas>
   );
 }
