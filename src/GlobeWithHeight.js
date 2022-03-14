@@ -23,21 +23,21 @@ export function GlobeWithHeight() {
     let displacement = new TextureLoader().load(
       `https://effectnode-2022.s3.ap-southeast-1.amazonaws.com/texture/images/earth-displacement/2k_earth_specular_map-invert-displace.png`
     );
-    let normalMap = new TextureLoader().load(
-      `https://effectnode-2022.s3.ap-southeast-1.amazonaws.com/texture/images/earth-displacement/2k_earth_normal_map.png`
-    );
-    let nightMap = new TextureLoader().load(
-      `https://effectnode-2022.s3.ap-southeast-1.amazonaws.com/texture/images/earth-displacement/2k_earth_nightmap.png`
-    );
-    nightMap.encoding = sRGBEncoding;
+    // let normalMap = new TextureLoader().load(
+    //   `https://effectnode-2022.s3.ap-southeast-1.amazonaws.com/texture/images/earth-displacement/2k_earth_normal_map.png`
+    // );
+    // let nightMap = new TextureLoader().load(
+    //   `https://effectnode-2022.s3.ap-southeast-1.amazonaws.com/texture/images/earth-displacement/2k_earth_nightmap.png`
+    // );
+    // nightMap.encoding = sRGBEncoding;
 
-    let dayMap = new TextureLoader().load(
-      `https://effectnode-2022.s3.ap-southeast-1.amazonaws.com/texture/images/earth-displacement/4k-earth-daytime.jpg`
-    );
-    dayMap.encoding = sRGBEncoding;
-    let waterMap = new TextureLoader().load(
-      `https://effectnode-2022.s3.ap-southeast-1.amazonaws.com/texture/images/water/waternormals.jpg`
-    );
+    // let dayMap = new TextureLoader().load(
+    //   `https://effectnode-2022.s3.ap-southeast-1.amazonaws.com/texture/images/earth-displacement/4k-earth-daytime.jpg`
+    // );
+    // dayMap.encoding = sRGBEncoding;
+    // let waterMap = new TextureLoader().load(
+    //   `https://effectnode-2022.s3.ap-southeast-1.amazonaws.com/texture/images/water/waternormals.jpg`
+    // );
 
     let hdri = new RGBELoader();
     hdri.load(
@@ -50,7 +50,7 @@ export function GlobeWithHeight() {
     );
 
     let sea = new Color("#0c5a6d"); //.addScalar(-0.1);
-    let hill = new Color("#0c6d1e");
+    let hill = new Color("#0c6d1e").sub(new Color("#333333"));
     let waterGeo = new SphereBufferGeometry(15.2, 32, 32);
     let waterMat = new MeshStandardMaterial({
       color: sea.clone().sub(new Color("#333333")),
@@ -67,9 +67,12 @@ export function GlobeWithHeight() {
     let uniforms = {
       hillColor: { value: hill },
       seaColor: { value: sea },
-      normalMap: { value: normalMap },
-      nightMap: { value: nightMap },
-      dayMap: { value: dayMap },
+      // normalMap: { value: normalMap },
+      // nightMap: { value: nightMap },
+      // dayMap: { value: dayMap },
+      normalMap: { value: null },
+      nightMap: { value: null },
+      dayMap: { value: null },
       displacement: { value: displacement },
     };
     let ballMat = new ShaderMaterial({

@@ -6,12 +6,12 @@ export function CameraAdjust() {
   useEffect(() => {
     camera.position.z = 50;
     renderer.physicallyCorrectLights = true;
-    let light = new DirectionalLight(0xffffff, 10);
-    camera.add(light);
-    light.position.x = 100;
-    light.position.y = 100;
-    light.position.z = 0;
-    scene.add(camera);
+    // let light = new DirectionalLight(0xffffff, 10);
+    // camera.add(light);
+    // light.position.x = 100;
+    // light.position.y = 100;
+    // light.position.z = 0;
+    // scene.add(camera);
   });
   return <group></group>;
 }
