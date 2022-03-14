@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useThree } from "@react-three/fiber";
-import { DirectionalLight } from "three";
+// import { DirectionalLight } from "three";
 export function CameraAdjust() {
   let { camera, scene, gl: renderer } = useThree();
   useEffect(() => {
